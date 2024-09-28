@@ -1,0 +1,87 @@
+{
+    "InitData": {
+        "id": "InitData",
+        "message": {
+            "GameData": {
+                "Reel": [
+                    ["1", "1", "2" ,"3"],
+                    ["1", "1", "2" ,"3"],
+                    ["1", "1", "2" ,"3"],
+                    ["1", "1", "2" ,"3"],
+                    ["1", "1", "2" ,"3"]
+                ],
+                "Lines": [
+                    [2, 2, 2]
+
+                ],
+                "Bets": [1.0, 2.0, 3.0],
+                "canSwitchLines": false,
+                "LinesCount": [10, 20, 30],
+                "autoSpin": [0, 1, 2],
+                "isBonus": true,
+                "BonusStopIndex": 2.0
+            },
+            "UIData": {
+                "paylines": {
+                    "symbols": [
+                        {
+                            "ID": 1,
+                            "Name": "symbol1",
+                            "MultiplierObject": {},
+                            "defaultAmount": 100,
+                            "symbolsCount": 5,
+                            "increaseValue": 10,
+                            "description": "A special symbol",
+                            "freeSpin": 5
+                        }
+                    ]
+                },
+                "spclSymbolTxt": ["special1", "special2"],
+                "AbtLogo": {
+                    "logoSprite": "logo.png",
+                    "link": "https://example.com"
+                },
+                "ToULink": "https://example.com/terms",
+                "PopLink": "https://example.com/privacy"
+            },
+            "PlayerData": {
+                "Balance": 1000.0,
+                "haveWon": 200.0,
+                "currentWining": 50.0
+            },
+            "BonusData": ["bonus1", "bonus2"]
+        }
+    },
+    "ResultData": {
+        "id": "ResultData",
+        "message": {
+            "GameData": {
+                "ResultReel": [
+                    ["1", "2", "3" ],
+                    ["1", "2", "3" ],
+                    ["2", "2", "2" ],
+                    ["1", "2", "3" ],
+                    ["1", "2", "3" ]
+                ],
+                "linesToEmit": [0],
+                "symbolsToEmit": [
+                    ["0,2", "1,2" ,"2,2"]
+                ],
+                "WinAmout": 1000.0,
+                "freeSpins": {
+                    "count": 5,
+                    "isNewAdded": false
+                },
+                "jackpot": 2000.0,
+                "isBonus": false,
+                "BonusStopIndex": 3.0
+            },
+            "PlayerData": {
+                "Balance": 2000.0,
+                "haveWon": 500.0,
+                "currentWining": 150.0
+            },
+            "BonusData": ["bonus3", "bonus4"]
+        }
+    }
+}
