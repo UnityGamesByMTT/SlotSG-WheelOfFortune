@@ -27,58 +27,60 @@ public class GameManager : MonoBehaviour
     private double currentBalance = 0;
     private double currentTotalBet = 0;
 
-    private bool inititated=false;
+    private bool inititated = false;
 
     [SerializeField] private int betMultiplier;
-    private void Awake()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+    private void Awake()
     {
-        socketManager.InitGameData??=StartGame;
+        socketManager.InitGameData ??= StartGame;
 
         SlotStart_Button.onClick.AddListener(StartSpin);
-        
+
         AutoSpin_Button.onClick.AddListener(StartAutoSpin);
         AutoSpinStop_Button.onClick.AddListener(StopAutoSpin);
 
-        socketManager.ShowAnotherDevicePopUp=()=>uIManager.ADPopUp();
-        socketManager.ShowDisconnectionPopUp=()=>uIManager.DisconnectionPopup();
+        socketManager.ShowAnotherDevicePopUp = () => uIManager.ADPopUp();
+        socketManager.ShowDisconnectionPopUp = () => uIManager.DisconnectionPopup();
 
         BetPlus_Button.onClick.AddListener(delegate { OnBetChange(true); });
         BetMinus_Button.onClick.AddListener(delegate { OnBetChange(false); });
         slotManager.shuffleInitialMatrix();
-        
-        bonusManager.PlayButtonAudio=()=>audioController.PlayButtonAudio("spin");
-        bonusManager.PlaySpinAudio=()=>audioController.PlaySpinAudio("bonus");
-        bonusManager.StopSpinAudio=()=>audioController.StopSpinAudio();
-        bonusManager.PlayWinAudio=()=>audioController.PlayWLAudio("bonuswin");
-        bonusManager.StopWinAudio=()=>audioController.StopWLAaudio();
 
-        uIManager.PlayButtonAudio=()=>audioController.PlayButtonAudio();
-        uIManager.ToggleAudio=(float value, string type)=>audioController.ToggleMute(value,type);
+        bonusManager.PlayButtonAudio = () => audioController.PlayButtonAudio("spin");
+        bonusManager.PlaySpinAudio = () => audioController.PlaySpinAudio("bonus");
+        bonusManager.StopSpinAudio = () => audioController.StopSpinAudio();
+        bonusManager.PlayWinAudio = () => audioController.PlayWLAudio("bonuswin");
+        bonusManager.StopWinAudio = () => audioController.StopWLAaudio();
+
+        uIManager.PlayButtonAudio = () => audioController.PlayButtonAudio();
+        uIManager.ToggleAudio = (float value, string type) => audioController.ToggleMute(value, type);
         // uIManager.Clos
 
     }
 
-    void Start(){
+    void Start()
+    {
 
     }
     void StartGame()
     {
-        if(inititated){
-        uIManager.InitialiseUIData( socketManager.socketModel.uIData.paylines);
-        return;
+        if (inititated)
+        {
+            uIManager.InitialiseUIData(socketManager.socketModel.uIData.paylines);
+            return;
         }
 
         slotManager.UpdatePlayerData(socketManager.socketModel.playerData);
-        slotManager.paylines=socketManager.socketModel.initGameData.Lines;
+        slotManager.paylines = socketManager.socketModel.initGameData.Lines;
         slotManager.UpdateBetText(socketManager.socketModel.initGameData.Bets[BetCounter], betMultiplier);
-        currentTotalBet=socketManager.socketModel.initGameData.Bets[BetCounter]*betMultiplier;
-        currentBalance=socketManager.socketModel.playerData.Balance;
-        uIManager.InitialiseUIData( socketManager.socketModel.uIData.paylines);
-        bonusManager.values=socketManager.socketModel.initGameData.BonusPayout;
+        currentTotalBet = socketManager.socketModel.initGameData.Bets[BetCounter] * betMultiplier;
+        currentBalance = socketManager.socketModel.playerData.Balance;
+        uIManager.InitialiseUIData(socketManager.socketModel.uIData.paylines);
+        bonusManager.values = socketManager.socketModel.initGameData.BonusPayout;
 
 
         CompareBalance();
-        inititated=true;
+        inititated = true;
         Application.ExternalCall("window.parent.postMessage", "OnEnter", "*");
     }
 
@@ -115,8 +117,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator StopAutoSpinCoroutine()
     {
         yield return new WaitUntil(() => !IsSpinning);
-        StopAllCoroutines();
         ToggleButtonGrp(true);
+        StopAllCoroutines();
     }
 
     void StartSpin()
@@ -149,7 +151,7 @@ public class GameManager : MonoBehaviour
             }
         }
         // TODO: WF to be done
-        currentTotalBet=socketManager.socketModel.initGameData.Bets[BetCounter]*betMultiplier;
+        currentTotalBet = socketManager.socketModel.initGameData.Bets[BetCounter] * betMultiplier;
 
         slotManager.UpdateBetText(socketManager.socketModel.initGameData.Bets[BetCounter], betMultiplier);
         CompareBalance();
@@ -166,12 +168,11 @@ public class GameManager : MonoBehaviour
             slotManager.WinningsAnim(false);
             slotManager.ResetLinesAndWins();
             bool start = CompareBalance();
-            if (start)
-            {
-                var spinData = new { data = new { currentBet = BetCounter, currentLines = socketManager.socketModel.initGameData.Lines.Count, spins = 1 }, id = "SPIN" };
-                socketManager.SendData("message", spinData);
-                ToggleButtonGrp(false);
-            }
+            ToggleButtonGrp(false);
+            // if (start)
+            // {
+
+            // }
             return start;
 
         }, OnError);
@@ -186,55 +187,69 @@ public class GameManager : MonoBehaviour
         }, OnError);
     }
 
-    IEnumerator OnSpinEnd()
+    IEnumerator OnSpinEnd(bool lowbal = false)
     {
+        if (!lowbal)
+        {
             audioController.StopSpinAudio();
-            currentBalance=socketManager.socketModel.playerData.Balance;
+            currentBalance = socketManager.socketModel.playerData.Balance;
             slotManager.UpdatePlayerData(socketManager.socketModel.playerData);
             slotManager.ProcessPayoutLines(socketManager.socketModel.resultGameData.linesToEmit);
             // TODO: WF enable animation
             slotManager.ProcessPointsAnimations(socketManager.socketModel.resultGameData.linesToEmit);
-            if(socketManager.socketModel.resultGameData.isbonus){
-                bonusManager.targetIndex=socketManager.socketModel.resultGameData.BonusIndex;
-                bonusManager.multipler=socketManager.socketModel.initGameData.Bets[BetCounter];
+            if (socketManager.socketModel.resultGameData.isbonus)
+            {
+                bonusManager.targetIndex = socketManager.socketModel.resultGameData.BonusIndex;
+                bonusManager.multipler = socketManager.socketModel.initGameData.Bets[BetCounter];
                 bonusManager.StartBonus();
                 audioController.playBgAudio("bonus");
-                yield return new WaitUntil(()=>!bonusManager.isBonusPlaying);
+                yield return new WaitUntil(() => !bonusManager.isBonusPlaying);
                 audioController.playBgAudio();
-
             }
-            else if(socketManager.socketModel.playerData.currentWining>0){
-                int wintype=CheckWinPopups(socketManager.socketModel.playerData.currentWining);
+            else if (socketManager.socketModel.playerData.currentWining > 0)
+            {
+                int wintype = CheckWinPopups(socketManager.socketModel.playerData.currentWining);
 
-                if(wintype>0){
-                    bool checking=true;
+                if (wintype > 0)
+                {
+                    bool checking = true;
                     audioController.PlayWLAudio("win");
-                    uIManager.PopulateWin(wintype,socketManager.socketModel.playerData.currentWining,(state)=>checking=state);
+                    uIManager.PopulateWin(wintype, socketManager.socketModel.playerData.currentWining, (state) => checking = state);
                     Debug.Log($"checking, {checking}");
-                    yield return new WaitUntil(()=>!checking);
+                    yield return new WaitUntil(() => !checking);
                     Debug.Log($"checking, {checking}");
                     audioController.StopWLAaudio();
                 }
 
                 slotManager.WinningsAnim(true);
             }
-            if (!IsAutoSpin) ToggleButtonGrp(true);
+        }
 
-            yield return null;
+        if (!IsAutoSpin) ToggleButtonGrp(true);
 
-        ;
+        yield return null;
+
     }
 
     IEnumerator SpinRoutine()
     {
-        IsSpinning = true;
 
         bool start = OnSpinStart();
         if (!start)
         {
-            OnSpinEnd();
+            OnSpinEnd(true);
+            if (IsAutoSpin)
+            {
+                // IsAutoSpin=false;
+                StopAutoSpin();
+                yield return new WaitForSeconds(1);
+            }
+            ToggleButtonGrp(true);
             yield break;
         }
+        IsSpinning = true;
+        var spinData = new { data = new { currentBet = BetCounter, currentLines = socketManager.socketModel.initGameData.Lines.Count, spins = 1 }, id = "SPIN" };
+        socketManager.SendData("message", spinData);
         audioController.PlaySpinAudio();
         yield return ErrorHandler.RunSafely(slotManager.InitiateSpin(), OnError);
 
@@ -243,7 +258,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         yield return ErrorHandler.RunSafely(slotManager.TerminateSpin(), OnError);
         if (!IsAutoSpin) IsSpinning = false;
-        yield return ErrorHandler.RunSafely(OnSpinEnd(),OnError);
+        yield return ErrorHandler.RunSafely(OnSpinEnd(), OnError);
     }
 
     IEnumerator AutoSpinRoutine()
@@ -272,21 +287,21 @@ public class GameManager : MonoBehaviour
         if (currentBalance < currentTotalBet)
         {
             uIManager.LowBalPopup();
-            if (AutoSpin_Button) AutoSpin_Button.interactable = false;
-            if (SlotStart_Button) SlotStart_Button.interactable = false;
+            // if (AutoSpin_Button) AutoSpin_Button.interactable = false;
+            // if (SlotStart_Button) SlotStart_Button.interactable = false;
             return false;
         }
         else
         {
-            if (AutoSpin_Button) AutoSpin_Button.interactable = true;
-            if (SlotStart_Button) SlotStart_Button.interactable = true;
+            // if (AutoSpin_Button) AutoSpin_Button.interactable = true;
+            // if (SlotStart_Button) SlotStart_Button.interactable = true;
             return true;
 
         }
     }
 
 
-    internal int  CheckWinPopups(double WinAmout)
+    internal int CheckWinPopups(double WinAmout)
     {
         if (WinAmout >= currentTotalBet * 10 && WinAmout < currentTotalBet * 15)
         {
@@ -300,14 +315,16 @@ public class GameManager : MonoBehaviour
         else if (WinAmout >= currentTotalBet * 20)
         {
             return 3;
-        }else{
+        }
+        else
+        {
 
             return 0;
         }
 
     }
 
-     void ToggleButtonGrp(bool toggle)
+    void ToggleButtonGrp(bool toggle)
     {
 
         if (SlotStart_Button) SlotStart_Button.interactable = toggle;

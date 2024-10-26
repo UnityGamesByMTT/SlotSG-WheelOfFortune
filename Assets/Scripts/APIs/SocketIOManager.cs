@@ -44,9 +44,9 @@ public class SocketIOManager : MonoBehaviour
     private const int maxReconnectionAttempts = 6;
     private readonly TimeSpan reconnectionDelay = TimeSpan.FromSeconds(10);
 
-    internal Action InitGameData=null;
-    internal Action ShowDisconnectionPopUp=null;
-    internal Action ShowAnotherDevicePopUp=null;
+    internal Action InitGameData = null;
+    internal Action ShowDisconnectionPopUp = null;
+    internal Action ShowAnotherDevicePopUp = null;
     private void Awake()
     {
         isLoading = true;
@@ -232,7 +232,7 @@ public class SocketIOManager : MonoBehaviour
 
     internal void InitRequest(string eventName)
     {
-        var initmessage=new { Data= new { GameID=gameID }, id="Auth" };
+        var initmessage = new { Data = new { GameID = gameID }, id = "Auth" };
         SendData(eventName, initmessage);
     }
 
@@ -275,11 +275,20 @@ public class SocketIOManager : MonoBehaviour
         {
             socketModel.resultGameData.ResultReel = helper.ConvertStringListsToIntLists(gameData["resultSymbols"].ToObject<List<List<string>>>());
             socketModel.resultGameData.linesToEmit = gameData["linestoemit"].ToObject<List<int>>();
-            socketModel.resultGameData.isbonus=gameData["isbonus"].ToObject<bool>();
-            socketModel.resultGameData.BonusIndex=gameData["BonusIndex"].ToObject<int>();
+            socketModel.resultGameData.isbonus = gameData["isbonus"].ToObject<bool>();
+            socketModel.resultGameData.BonusIndex = gameData["BonusIndex"].ToObject<int>();
             isResultdone = true;
             print("result data: " + JsonConvert.SerializeObject(socketModel.resultGameData.ResultReel));
 
+        }
+        else if (messageId == "ExitUser")
+        {
+            if (this.manager != null)
+            {
+                Debug.Log("Dispose my Socket");
+                this.manager.Close();
+            }
+            Application.ExternalCall("window.parent.postMessage", "onExit", "*");
         }
     }
 

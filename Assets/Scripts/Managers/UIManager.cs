@@ -192,7 +192,6 @@ public class UIManager : MonoBehaviour
 
     internal void LowBalPopup()
     {
-
         OpenPopup(LowBalancePopup_Object);
     }
 
