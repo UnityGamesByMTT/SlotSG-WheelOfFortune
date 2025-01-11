@@ -55,7 +55,7 @@ public class SlotManager : MonoBehaviour
     private List<Tweener> alltweens = new List<Tweener>();
 
     private Tweener WinTween = null;
-
+    private Tween BalanceTween=null;
     [SerializeField] private List<ImageAnimation> TempList;
 
     [SerializeField] private Transform[] slot1Segment;
@@ -259,9 +259,9 @@ public class SlotManager : MonoBehaviour
         double initAmount = balance;
         balance = balance - (bet);
 
-        DOTween.To(() => initAmount, (val) => initAmount = val, balance, 0.5f).OnUpdate(() =>
+       BalanceTween= DOTween.To(() => initAmount, (val) => initAmount = val, balance, 0.5f).OnUpdate(() =>
         {
-            if (Balance_text) Balance_text.text = initAmount.ToString("f2");
+            if (Balance_text) Balance_text.text = initAmount.ToString("f3");
         });
 
     }
@@ -306,45 +306,58 @@ public class SlotManager : MonoBehaviour
 
     internal void UpdatePlayerData(PlayerData playerData)
     {
-
-        TotalWin_text.text = playerData.currentWining.ToString();
-        Balance_text.text = playerData.Balance.ToString();
+        // DOTween.Kill(Balance_text);
+        // DOTween.Kill(TotalWin_text);
+        BalanceTween?.Kill();
+        TotalWin_text.text = playerData.currentWining.ToString("f3");
+        Balance_text.text = playerData.Balance.ToString("f3");
 
     }
 
 
     internal IEnumerator InitiateSpin()
     {
-        WaitForSeconds delay = new WaitForSeconds(0.2f);
+        float delay=0.3f;
+        float waitTime=0.2f;
+
         Tweener tweener = null;
         for (int i = 0; i < Slot_Transform.Length; i++)
         {
+            if(GameManager.turboMode){
+                delay/=2;
+                waitTime/=2;
+            }
             // int index=i;
             // Slot_Transform[index].DOLocalMoveY(-tweenHeight, 0.25f, false).SetEase(Ease.InExpo).OnComplete(()=>{
             // Slot_Transform[index].transform.localPosition= new Vector2(Slot_Transform[index].transform.localPosition.x,stopPosition);
 
 
             // });
-            tweener = Slot_Transform[i].DOLocalMoveY(-tweenHeight, 0.3f, false).SetLoops(-1).SetEase(Ease.Linear);
+            tweener = Slot_Transform[i].DOLocalMoveY(-tweenHeight, delay, false).SetLoops(-1).SetEase(Ease.Linear);
             alltweens.Add(tweener);
             
             // .SetLoops(-1, LoopType.Restart).SetDelay(0).SetEase(Ease.Linear);
             // tweener.Play();
             // InitializeTweening(Slot_Transform[i]);
-            yield return delay;
+            yield return new WaitForSeconds(waitTime);
         }
     }
 
     internal IEnumerator TerminateSpin()
     {
-        WaitForSeconds delay = new WaitForSeconds(0.35f);
+        float delay=0.35f;
 
         for (int i = 0; i < alltweens.Count; i++)
         {
             alltweens[i].Pause();
+            if(GameManager.turboMode)
+            delay/=2;
+            if(GameManager.immediateStop)
+            delay=0;
+
             Slot_Transform[i].localPosition = new Vector2(Slot_Transform[i].localPosition.x, 0);
-            alltweens[i] = Slot_Transform[i].DOLocalMoveY(stopPosition, 0.35f).SetEase(Ease.OutQuad);
-            yield return delay;
+            alltweens[i] = Slot_Transform[i].DOLocalMoveY(stopPosition, delay).SetEase(Ease.OutQuad);
+            yield return new WaitForSeconds(delay);
             alltweens[i].Kill();
             // yield return StopTweening(Slot_Transform[i], i);
         }

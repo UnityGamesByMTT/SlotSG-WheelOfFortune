@@ -1,17 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using System;
-using UnityEngine.SceneManagement;
-using UnityEngine.Networking;
 using DG.Tweening;
-using System.Linq;
 using Newtonsoft.Json;
 using Best.SocketIO;
 using Best.SocketIO.Events;
 using Newtonsoft.Json.Linq;
-using System.Runtime.Serialization;
 
 public class SocketIOManager : MonoBehaviour
 {
@@ -29,6 +24,8 @@ public class SocketIOManager : MonoBehaviour
     protected string SocketURI = null;
 
     // TODO: WF to be changed
+    // protected string TestSocketURI = "http://localhost:5000";
+    // protected string TestSocketURI = "https://game-crm-rtp-backend.onrender.com/";
     protected string TestSocketURI = "http://localhost:5000";
     //protected string SocketURI = "http://localhost:5000";
 
@@ -263,10 +260,10 @@ public class SocketIOManager : MonoBehaviour
 
         if (messageId == "InitData")
         {
-            socketModel.uIData = message["UIData"].ToObject<UIData>();
-            socketModel.initGameData.Bets = gameData["Bets"].ToObject<List<double>>();
-            socketModel.initGameData.Lines = gameData["Lines"].ToObject<List<List<int>>>();
-            socketModel.initGameData.BonusPayout = gameData["BonusPayout"].ToObject<List<int>>();
+            socketModel.uIData = resp["message"]["UIData"].ToObject<UIData>();
+            socketModel.initGameData.Bets = resp["message"]["GameData"]["Bets"].ToObject<List<double>>();
+            socketModel.initGameData.Lines = resp["message"]["GameData"]["Lines"].ToObject<List<List<int>>>();
+            socketModel.initGameData.BonusPayout = resp["message"]["GameData"]["BonusPayout"].ToObject<List<int>>();
             // COMPLETED: WF multiple parsheet
             InitGameData?.Invoke();
 

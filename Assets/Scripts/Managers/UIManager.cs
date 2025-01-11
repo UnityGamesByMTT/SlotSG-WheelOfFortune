@@ -42,6 +42,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text Win_text_title;
     [SerializeField] private GameObject WinPopup_Object;
     [SerializeField] private TMP_Text Win_Text;
+    [SerializeField] private Button SkipWin_Button;
 
 
     [Header("low balance popup")]
@@ -106,8 +107,8 @@ public class UIManager : MonoBehaviour
         MusicSlider.onValueChanged.AddListener(ToggleMusic);
         SoundSlider.onValueChanged.AddListener(ToggleSound);
 
-        SetButton(LeftBtn, () => Slide(-1));
-        SetButton(RightBtn, () => Slide(1));
+        SetButton(LeftBtn, () => Slide(false));
+        SetButton(RightBtn, () => Slide(true));
 
         SetButton(CloseDisconnect_Button, CallOnExitFunction);
         SetButton(Close_Button, () => ClosePopup());
@@ -115,6 +116,7 @@ public class UIManager : MonoBehaviour
 
         SetButton(CloseAD_Button, CallOnExitFunction);
 
+        SkipWin_Button.onClick.AddListener(()=>CloseWinPopUp());
 
     }
 
@@ -130,7 +132,7 @@ public class UIManager : MonoBehaviour
             });
         }
     }
-    internal void PopulateWin(int value, double amount, Action<bool> isDone)
+    internal void PopulateWin(int value, double amount)
     {
         switch (value)
         {
@@ -151,44 +153,23 @@ public class UIManager : MonoBehaviour
 
         DOTween.To(() => initAmount, (val) => initAmount = val, amount, 3f).OnUpdate(() =>
         {
-            if (Win_Text) Win_Text.text = initAmount.ToString("f2");
+            if (Win_Text) Win_Text.text = initAmount.ToString("f3");
         });
 
-        DOVirtual.DelayedCall(4f, () =>
-        {
-            ClosePopup();
-            isDone(false);
-        });
+        Invoke(nameof(CloseWinPopUp),4f);
+
+
 
     }
 
-    // private IEnumerator LoadingRoutine()
-    // {
-    //     StartCoroutine(LoadingTextAnimate());
-    //     float fillAmount = 0.7f;
-    //     progressbar.DOFillAmount(fillAmount, 2f).SetEase(Ease.Linear);
-    //     yield return new WaitForSecondsRealtime(2f);
-    //     yield return new WaitUntil(() => !socketManager.isLoading);
-    //     progressbar.DOFillAmount(1, 1f).SetEase(Ease.Linear);
-    //     yield return new WaitForSecondsRealtime(1f);
-    //     if (spalsh_screen) spalsh_screen.SetActive(false);
-    //     StopCoroutine(LoadingTextAnimate());
-    // }
 
-    // private IEnumerator LoadingTextAnimate()
-    // {
-    //     while (true)
-    //     {
-    //         if (loadingText) loadingText.text = "Loading.";
-    //         yield return new WaitForSeconds(0.5f);
-    //         if (loadingText) loadingText.text = "Loading..";
-    //         yield return new WaitForSeconds(0.5f);
-    //         if (loadingText) loadingText.text = "Loading...";
-    //         yield return new WaitForSeconds(0.5f);
-    //     }
-    // }
+    void CloseWinPopUp(){
 
+        GameManager.checkWin=false;
+        DOTween.Kill(Win_Text.transform);
+        ClosePopup();
 
+    }
 
     internal void LowBalPopup()
     {
@@ -288,47 +269,30 @@ public class UIManager : MonoBehaviour
 
 
 
-    private void Slide(int direction)
+    private void Slide(bool inc)
     {
-        // if (audioController) audioController.PlayButtonAudio();
+        if(inc){
+                CurrentIndex++;
+            if(CurrentIndex>paytableList.Length-1)
+            CurrentIndex=0;
 
-        if (CurrentIndex < paytableList.Length - 1 && direction > 0)
-        {
-            // Move to the next item
-            paytableList[CurrentIndex].SetActive(false);
-            paytableList[CurrentIndex + 1].SetActive(true);
 
-            CurrentIndex++;
-
-        }
-        else if (CurrentIndex >= 1 && direction < 0)
-        {
-
-            // Move to the previous item
-            paytableList[CurrentIndex].SetActive(false);
-            paytableList[CurrentIndex - 1].SetActive(true);
+        }else{
 
             CurrentIndex--;
-
-
-        }
-        if (CurrentIndex == paytableList.Length - 1)
-        {
-            RightBtn.interactable = false;
-        }
-        else
-        {
-            RightBtn.interactable = true;
+            if(CurrentIndex<0)
+            CurrentIndex=paytableList.Length-1;
 
         }
-        if (CurrentIndex == 0)
+
+        for (int i = 0; i < paytableList.Length; i++)
         {
-            LeftBtn.interactable = false;
+            paytableList[i].SetActive(false);
         }
-        else
-        {
-            LeftBtn.interactable = true;
-        }
+
+        paytableList[CurrentIndex].SetActive(true);
+
+
 
 
     }

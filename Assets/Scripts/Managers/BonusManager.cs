@@ -47,18 +47,28 @@ public class BonusManager : MonoBehaviour
         offSet = degreesPerSegment / 2;
 
         Spin_Button.onClick.AddListener(() => OnSpinStart());
-        // OnSpinStart();
+
     }
 
-    internal void StartBonus()
+    internal void StartBonus(bool autoSpinOn)
     {
-        bonusPanel.SetActive(true);
         for (int i = 0; i < valueTextList.Length; i++)
         {
             valueTextList[i].text = $"x {values[i].ToString()}";
         }
+        if(autoSpinOn){
+            Spin_Button.gameObject.SetActive(false);
+            Invoke(nameof(OnSpinStart),2f);
+        }else{
+            Spin_Button.gameObject.SetActive(true);
+        }
+        bonusPanel.SetActive(true);
         betPerLineText.text=multipler.ToString();
         isBonusPlaying=true;
+    }
+
+    void AutoStartBonus(){
+
     }
     private void OnSpinStart()
     {
@@ -81,8 +91,8 @@ public class BonusManager : MonoBehaviour
             yield break;
         
         PlaySpinAudio?.Invoke();
-        yield return new WaitForSeconds(2f);
         winText.text = (values[targetIndex] * multipler).ToString();
+        yield return new WaitForSeconds(2f);
         rotationTween.timeScale = 0.5f;
         float targetAngle = targetIndex * degreesPerSegment;
         float threshold = 5f;
@@ -113,9 +123,12 @@ public class BonusManager : MonoBehaviour
                 CancelInvoke(nameof(LightAnimation));
                 lightOff.SetActive(false);
                 StopSpinAudio?.Invoke();
+                if(values[targetIndex]*multipler>0){
                 PlayWinAudio?.Invoke();
                 yield return new WaitForSeconds(1f);
                 StopWinAudio?.Invoke();
+
+                }
                 OnSpinEnd();
                 break;
             }
