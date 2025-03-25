@@ -82,7 +82,7 @@ public class UIManager : MonoBehaviour
     private bool isExit = false;
 
     internal GameObject ActivePopup = null;
-
+    internal SocketIOManager socketManager;
     internal Action PlayButtonAudio;
 
     internal Action<float, string> ToggleAudio;
@@ -111,7 +111,10 @@ public class UIManager : MonoBehaviour
         SetButton(LeftBtn, () => Slide(false));
         SetButton(RightBtn, () => Slide(true));
 
-        SetButton(CloseDisconnect_Button, CallOnExitFunction);
+        if (CloseDisconnect_Button) CloseDisconnect_Button.onClick.RemoveAllListeners();
+        if (CloseDisconnect_Button) CloseDisconnect_Button.onClick.AddListener(delegate { CallOnExitFunction(); socketManager.ReactNativeCallOnFailedToConnect(); }); //BackendChanges
+
+
         SetButton(Close_Button, () => ClosePopup());
         SetButton(QuitSplash_button, () => OpenPopup(quitPopupObject));
 
