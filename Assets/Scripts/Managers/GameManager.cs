@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
 
         CompareBalance();
         inititated = true;
-        Application.ExternalCall("window.parent.postMessage", "OnEnter", "*");
+        //Application.ExternalCall("window.parent.postMessage", "OnEnter", "*");
     }
 
 
