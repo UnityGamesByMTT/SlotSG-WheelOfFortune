@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     {
         socketManager.InitGameData ??= StartGame;
 
+        uIManager.closeSocket=socketManager.CloseSocket;
         SlotStart_Button.onClick.AddListener(StartSpin);
 
         AutoSpin_Button.onClick.AddListener(StartAutoSpin);
@@ -96,7 +97,7 @@ public class GameManager : MonoBehaviour
     {
         if (inititated)
         {
-            uIManager.InitialiseUIData(socketManager.socketModel.uIData.paylines);
+            uIManager.InitialiseUIData(socketManager.socketModel.uIData.paylines,socketManager.socketModel.initGameData.Lines.Count);
             return;
         }
 
@@ -105,13 +106,13 @@ public class GameManager : MonoBehaviour
         slotManager.UpdateBetText(socketManager.socketModel.initGameData.Bets[BetCounter], betMultiplier);
         currentTotalBet = socketManager.socketModel.initGameData.Bets[BetCounter] * betMultiplier;
         currentBalance = socketManager.socketModel.playerData.Balance;
-        uIManager.InitialiseUIData(socketManager.socketModel.uIData.paylines);
+        uIManager.InitialiseUIData(socketManager.socketModel.uIData.paylines,socketManager.socketModel.initGameData.Lines.Count);
         bonusManager.values = socketManager.socketModel.initGameData.BonusPayout;
 
 
         CompareBalance();
         inititated = true;
-        Application.ExternalCall("window.parent.postMessage", "OnEnter", "*");
+        //Application.ExternalCall("window.parent.postMessage", "OnEnter", "*");
     }
 
 
@@ -186,7 +187,7 @@ public class GameManager : MonoBehaviour
         currentTotalBet = socketManager.socketModel.initGameData.Bets[BetCounter] * betMultiplier;
 
         slotManager.UpdateBetText(socketManager.socketModel.initGameData.Bets[BetCounter], betMultiplier);
-        CompareBalance();
+        // CompareBalance();
 
     }
 
@@ -229,6 +230,7 @@ public class GameManager : MonoBehaviour
             slotManager.UpdatePlayerData(socketManager.socketModel.playerData);
             slotManager.ProcessPayoutLines(socketManager.socketModel.resultGameData.linesToEmit);
             // TODO: WF enable animation
+
             slotManager.ProcessPointsAnimations(socketManager.socketModel.resultGameData.linesToEmit);
             if (socketManager.socketModel.resultGameData.isbonus)
             {
@@ -282,7 +284,7 @@ public class GameManager : MonoBehaviour
             yield break;
         }
         IsSpinning = true;
-        var spinData = new { data = new { currentBet = BetCounter, currentLines = socketManager.socketModel.initGameData.Lines.Count, spins = 1 }, id = "SPIN" };
+        var spinData = new { data = new { currentBet = BetCounter, currentLines = socketManager.socketModel.initGameData.Lines.Count*3, spins = 1 }, id = "SPIN" };
         socketManager.SendData("message", spinData);
         audioController.PlaySpinAudio();
         if (!IsAutoSpin)

@@ -1138,7 +1138,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 66.7
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3888,6 +3888,7 @@ MonoBehaviour:
   PaytableExit_Button: {fileID: 1398599432}
   Paytable_Button: {fileID: 721399234}
   Paytable_Object: {fileID: 1664697762}
+  WinText: {fileID: 2068557666}
   SettingsPopup_Object: {fileID: 103253977}
   Settings_Button: {fileID: 1793761132}
   SettingsExit_Button: {fileID: 1538526652}
@@ -5311,7 +5312,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c6dee67c9fb64b7bbed44da112a7af7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TestToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDgzY2U1YTI3YmY5MDI0NDNlYjRjMCIsInVzZXJuYW1lIjoic2F5YW4iLCJyb2xlIjoicGxheWVyIiwiaWF0IjoxNzM2NDkyMjMwLCJleHAiOjE3MzcwOTcwMzB9.2wU3WBZ8PNxRzqmq-wnVXOMchnnwNcKXIO_atVyJrkY
+  TestToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3N2JhM2QzOTgxYmU0MzlkMjkyYzgzYSIsInVzZXJuYW1lIjoiTWVldCIsInJvbGUiOiJwbGF5ZXIiLCJpYXQiOjE3NDA5ODM3NTUsImV4cCI6MTc0MTU4ODU1NX0.OT9ls_F-uFhPHNpRIFH5BxZ2QPPTBasrrfd7evgiP5E
+  JSManager: {fileID: 1674023574}
 --- !u!1 &501733827
 GameObject:
   m_ObjectHideFlags: 0
@@ -20504,8 +20506,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.4, y: -1.08}
-  m_SizeDelta: {x: 257.67, y: 67.07}
+  m_AnchoredPosition: {x: -0.08, y: -1.08}
+  m_SizeDelta: {x: 253.8, y: 67.07}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1666685184
 MonoBehaviour:
@@ -20820,6 +20822,50 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7158441405746885278, guid: ddd2b87ce37264c1e8153a385ef769fe, type: 3}
   m_PrefabInstance: {fileID: 1672212584}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1674023573
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1674023575}
+  - component: {fileID: 1674023574}
+  m_Layer: 0
+  m_Name: jsmanager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1674023574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1674023573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0d325461eef9421d9f9618b5312357c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1674023575
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1674023573}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1675950267
 GameObject:
   m_ObjectHideFlags: 0
@@ -25807,8 +25853,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -209.6}
-  m_SizeDelta: {x: 961.53, y: 83.6}
+  m_AnchoredPosition: {x: 0, y: -196.7}
+  m_SizeDelta: {x: 961.53, y: 109.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2068557666
 MonoBehaviour:
@@ -25830,8 +25876,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Winnings are calculated based on bet per line \nBet per line = Total bet
-    / Number of lines"
+  m_text: "No of Position=9\nWinnings are calculated based on bet per line \nBet
+    per line = Total bet / No of Positions"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7426b609eb2ba4a0ba7a6ec787165a1e, type: 2}
   m_sharedMaterial: {fileID: 4488374881921247725, guid: 7426b609eb2ba4a0ba7a6ec787165a1e, type: 2}
@@ -27321,3 +27367,4 @@ SceneRoots:
   - {fileID: 4326194446140345616}
   - {fileID: 804008366}
   - {fileID: 1278492945}
+  - {fileID: 1674023575}

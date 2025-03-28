@@ -91,7 +91,7 @@ public class BonusManager : MonoBehaviour
             yield break;
         
         PlaySpinAudio?.Invoke();
-        winText.text = (values[targetIndex] * multipler).ToString();
+        winText.text = (values[targetIndex] * multipler).ToString("f3");
         yield return new WaitForSeconds(2f);
         rotationTween.timeScale = 0.5f;
         float targetAngle = targetIndex * degreesPerSegment;

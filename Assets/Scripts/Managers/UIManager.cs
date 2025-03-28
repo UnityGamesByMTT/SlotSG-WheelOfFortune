@@ -28,6 +28,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button PaytableExit_Button;
     [SerializeField] private Button Paytable_Button;
     [SerializeField] private GameObject Paytable_Object;
+    [SerializeField] private TMP_Text WinText;
 
 
     [Header("Settings Popup")]
@@ -81,15 +82,15 @@ public class UIManager : MonoBehaviour
     private bool isExit = false;
 
     internal GameObject ActivePopup = null;
-
+    internal SocketIOManager socketManager;
     internal Action PlayButtonAudio;
 
     internal Action<float, string> ToggleAudio;
-    private void Awake()
-    {
+    // private void Awake()
+    // {
         // if (spalsh_screen) spalsh_screen.SetActive(true);
         // StartCoroutine(LoadingRoutine());
-    }
+    // }
 
     private void Start()
     {
@@ -110,7 +111,10 @@ public class UIManager : MonoBehaviour
         SetButton(LeftBtn, () => Slide(false));
         SetButton(RightBtn, () => Slide(true));
 
-        SetButton(CloseDisconnect_Button, CallOnExitFunction);
+        if (CloseDisconnect_Button) CloseDisconnect_Button.onClick.RemoveAllListeners();
+        if (CloseDisconnect_Button) CloseDisconnect_Button.onClick.AddListener(delegate { CallOnExitFunction(); socketManager.ReactNativeCallOnFailedToConnect(); }); //BackendChanges
+
+
         SetButton(Close_Button, () => ClosePopup());
         SetButton(QuitSplash_button, () => OpenPopup(quitPopupObject));
 
@@ -176,7 +180,7 @@ public class UIManager : MonoBehaviour
         OpenPopup(LowBalancePopup_Object);
     }
 
-    internal void InitialiseUIData(Paylines paylines)
+    internal void InitialiseUIData(Paylines paylines,int linescount)
     {
         for (int i = 0; i < 5; i++)
         {
@@ -214,15 +218,8 @@ public class UIManager : MonoBehaviour
 
         Rule_Text.text = paylines.symbols[13].description.Type != JTokenType.Object ? paylines.symbols[13].description.ToString() : "";
 
+        WinText.text=$"No of Positions = {linescount*3} \nWinnings are calculated based on bet per line \nBet per line = Total bet / No of Positions ";
 
-        // for (int i = 0; i < paylines.symbols.Count; i++)
-        // {
-
-        //     if (paylines.symbols[i].Name.ToUpper() == "BONUS")
-        //     {
-        //         if (Bonus_Text) Bonus_Text.text = paylines.symbols[i].description.ToString();
-        //     }
-        // }
     }
 
     internal void ADPopUp()
