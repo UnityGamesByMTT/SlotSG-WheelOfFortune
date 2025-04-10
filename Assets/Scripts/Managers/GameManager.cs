@@ -284,7 +284,7 @@ public class GameManager : MonoBehaviour
             yield break;
         }
         IsSpinning = true;
-        var spinData = new { data = new { currentBet = BetCounter, currentLines = socketManager.socketModel.initGameData.Lines.Count*3, spins = 1 }, id = "SPIN" };
+        var spinData = new { data = new { currentBet = BetCounter, currentLines = socketManager.socketModel.initGameData.Lines.Count, spins = 1 }, id = "SPIN" };
         socketManager.SendData("message", spinData);
         audioController.PlaySpinAudio();
         if (!IsAutoSpin)
